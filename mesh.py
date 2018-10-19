@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 
 import noise
 import numpy as np
@@ -20,15 +20,18 @@ class Mesh:
         self.regions: List[List[int]] = vor.regions
         self.point_region: List[int] = vor.point_region
 
-        self.neighbor_points: List[List[int]] = [[] for _ in range(len(self.points))]
-        for i, j in self.ridge_points:
-            self.neighbor_points[i].append(j)
-            self.neighbor_points[j].append(i)
+        self.infinite_regions = {i for i, r in enumerate(self.regions) if -1 in r}
 
-        self.neighbor_vertices: List[List[int]] = [[] for _ in range(len(self.vertices))]
-        for i, j in self.ridge_vertices:
-            self.neighbor_vertices[i].append(j)
-            self.neighbor_vertices[j].append(i)
+        self.neighbor_points: List[Set[int]] = [set() for _ in range(len(self.points))]
+        for a, b in self.ridge_points:
+            self.neighbor_points[a].add(b)
+            self.neighbor_points[b].add(a)
+
+        self.neighbor_vertices: List[Set[int]] = [set() for _ in range(len(self.vertices))]
+        for a, b in self.ridge_vertices:
+            if a >= 0 and b >= 0:
+                self.neighbor_vertices[a].add(b)
+                self.neighbor_vertices[b].add(a)
 
         self.noise: ndarray = None
 
