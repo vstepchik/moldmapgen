@@ -1,4 +1,3 @@
-from collections import defaultdict
 from typing import List
 
 import noise
@@ -21,10 +20,15 @@ class Mesh:
         self.regions: List[List[int]] = vor.regions
         self.point_region: List[int] = vor.point_region
 
-        self.neighbors = defaultdict(set)
+        self.neighbor_points: List[List[int]] = [[] for _ in range(len(self.points))]
         for i, j in self.ridge_points:
-            self.neighbors[i].add(j)
-            self.neighbors[j].add(i)
+            self.neighbor_points[i].append(j)
+            self.neighbor_points[j].append(i)
+
+        self.neighbor_vertices: List[List[int]] = [[] for _ in range(len(self.vertices))]
+        for i, j in self.ridge_vertices:
+            self.neighbor_vertices[i].append(j)
+            self.neighbor_vertices[j].append(i)
 
         self.noise: ndarray = None
 
