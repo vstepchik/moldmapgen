@@ -1,19 +1,30 @@
+from collections import defaultdict
 from typing import List
 
 import noise
 import numpy as np
 from numpy.core.multiarray import ndarray
-from scipy.spatial.qhull import Voronoi
+
+from atlas import Atlas
 
 
 class Mesh:
-    def __init__(self, vor: Voronoi):
+    def __init__(self, dimensions: (int, int), npoints: int, relax_steps: int = 0):
+        vor = Atlas(dimensions=dimensions, granularity=npoints)
+        vor.generate_voronoi()
+        vor = vor.relax_points(relax_steps)
+
         self.points: ndarray = vor.points
         self.vertices: ndarray = vor.vertices
         self.ridge_points: ndarray = vor.ridge_points
         self.ridge_vertices: List[List[int]] = vor.ridge_vertices
         self.regions: List[List[int]] = vor.regions
         self.point_region: List[int] = vor.point_region
+
+        self.neighbors = defaultdict(set)
+        for i, j in self.ridge_points:
+            self.neighbors[i].add(j)
+            self.neighbors[j].add(i)
 
         self.noise: ndarray = None
 
