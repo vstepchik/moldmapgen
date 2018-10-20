@@ -1,3 +1,4 @@
+import random
 from typing import List, Set
 
 import noise
@@ -51,6 +52,31 @@ class Mesh:
             self.noise[i] = (lvl + 1) / 2.0
 
     def create_tectonic_plates(self, n: int):
-        regions = np.random.choice(self.point_region, n, replace=False)
-        print(regions)
-        return regions
+        spread_p = np.random.uniform(0.3, 0.7, n)
+        plates = [{p} for p in random.sample(range(len(self.points)), n)]
+        taken = {p for point_set in plates for p in point_set}
+
+        active_set = {n for region in plates for r in region for n in
+                      list(self.neighbor_points[r])} - self.infinite_regions
+        while active_set:
+            to_remove: Set[int] = set()
+            to_add: Set[int] = set()
+            for region in active_set:
+                if self.point_region[region] in self.infinite_regions:
+                    to_remove.add(region)
+                    continue
+
+                neighbors = self.neighbor_points[region]
+                candidates = neighbors & taken
+                join_to = random.sample(candidates, 1)[0]
+                pl, pi = next((p, i) for i, p in enumerate(plates) if join_to in p)
+                if random.random() > spread_p[pi]:
+                    continue
+
+                pl.add(region)
+                taken.add(region)
+                to_remove.add(region)
+                to_add |= (neighbors - taken - active_set)
+            active_set = (active_set - to_remove) | to_add
+
+        return plates
