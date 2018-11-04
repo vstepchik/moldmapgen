@@ -1,55 +1,76 @@
-import cv2
-import numpy as np
-from scipy.spatial import Voronoi
+import sys
 
-_MAP_SIZE = 2048
-_DOTS_DENSITY = 0.004
-
-_DOTS_AMOUNT = int(_MAP_SIZE * _MAP_SIZE * _DOTS_DENSITY)
+import OpenGL.GL as gl
+import glfw
+import imgui
+from imgui.integrations.glfw import GlfwRenderer
 
 
-class T:
-    from datetime import datetime
-    dt = datetime
+def main():
+    window = impl_glfw_init()
+    impl = GlfwRenderer(window)
 
-    def __init__(self):
-        self.__t = T.dt.utcnow()
+    while not glfw.window_should_close(window):
+        glfw.poll_events()
+        impl.process_inputs()
 
-    def p(self, label: str):
-        now = T.dt.utcnow()
-        print(now - self.__t, label)
-        self.__t = now
+        imgui.new_frame()
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu("File", True):
+
+                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
+
+                if clicked_quit:
+                    sys.exit(0)
+
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+        imgui.show_test_window()
+
+        imgui.begin("Custom window", True)
+        imgui.text("Bar")
+        imgui.text_colored("Eggs", 0.2, 1., 0.)
+        imgui.end()
+
+        gl.glClearColor(0.05, 0.05, 0.05, 1)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT)
+
+        imgui.render()
+        impl.render(imgui.get_draw_data())
+        glfw.swap_buffers(window)
+
+    impl.shutdown()
+    glfw.terminate()
 
 
-t = T()
-img = np.zeros((_MAP_SIZE, _MAP_SIZE, 3), np.uint8)
-points = np.random.rand(2, _DOTS_AMOUNT) * _MAP_SIZE
-t.p(f"{_DOTS_AMOUNT} points generated")
+def impl_glfw_init():
+    width, height = 1280, 720
+    window_name = "mold-map-gen"
 
-vor = Voronoi(points.reshape([_DOTS_AMOUNT, 2]))
-t.p("voronoi build")
+    if not glfw.init():
+        print("Could not initialize OpenGL context")
+        sys.exit(1)
 
-for i in range(len(vor.ridge_vertices)):
-    if vor.ridge_vertices[i][0] < 0:
-        continue
-    coordinates = vor.vertices[vor.ridge_vertices[i]]
-    cv2.line(img, tuple(coordinates[0].astype(int)), tuple(coordinates[1].astype(int)), (153, 0, 0), 1)
+    # OS X supports only forward-compatible core profiles from 3.2
+    glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
+    glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
+    glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 
-for i in range(len(vor.ridge_points)):
-    if vor.ridge_points[i][0] < 0:
-        continue
-    coordinates = vor.points[vor.ridge_points[i]]
-    cv2.line(img, tuple(coordinates[0].astype(int)), tuple(coordinates[1].astype(int)), (0, 0, 102), 1)
+    glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, gl.GL_TRUE)
 
-t.p("voronoi drawn")
+    # Create a windowed mode window and its OpenGL context
+    window = glfw.create_window(int(width), int(height), window_name, None, None)
+    glfw.make_context_current(window)
 
-if 0:
-    fig_size = plt.rcParams["figure.figsize"]
-    fig_size[0] = 20
-    fig_size[1] = 20
-    voronoi_plot_2d(vor)
-    plt.show()
+    if not window:
+        glfw.terminate()
+        print("Could not initialize Window")
+        sys.exit(1)
 
-if 1:
-    cv2.imshow("output", img)
-    cv2.waitKey()
+    return window
+
+
+if __name__ == "__main__":
+    main()
