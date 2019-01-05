@@ -13,6 +13,7 @@ from generator.ctrl.steps.tectonics import TectonicsCreationStep
 def main():
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
+    show_sample: bool = False
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -23,19 +24,18 @@ def main():
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
 
-                clicked_capture, selected_capture = imgui.menu_item("Capture view")
-                clicked_quit, selected_quit = imgui.menu_item("Quit")
+                clicked_show_sample, _clicked_show_test_window = imgui.menu_item("Test window", None, show_sample)
+                _clicked_capture, _selected_capture = imgui.menu_item("Capture view")
+                clicked_quit, _selected_quit = imgui.menu_item("Quit")
 
                 if clicked_quit:
                     glfw.set_window_should_close(window, True)
 
-                if selected_capture:
-                    print("cs")
+                if clicked_show_sample:
+                    show_sample = not show_sample
 
                 imgui.end_menu()
             imgui.end_main_menu_bar()
-
-        imgui.show_test_window()
 
         imgui.begin("Custom window", True)
         imgui.begin_group()
@@ -46,6 +46,9 @@ def main():
         imgui.end_group()
         imgui.text_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
+
+        if show_sample:
+            imgui.show_test_window()
 
         gl.glClearColor(0.05, 0.05, 0.05, 1)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
