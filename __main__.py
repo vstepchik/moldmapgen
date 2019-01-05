@@ -5,6 +5,10 @@ import glfw
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
+from generator.ctrl.steps.mesh import MeshCreationStep
+from generator.ctrl.steps.space import SpaceCreationStep
+from generator.ctrl.steps.tectonics import TectonicsCreationStep
+
 
 def main():
     window = impl_glfw_init()
@@ -19,10 +23,14 @@ def main():
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
 
-                clicked_quit, selected_quit = imgui.menu_item("Quit", 'Cmd+Q', False, True)
+                clicked_capture, selected_capture = imgui.menu_item("Capture view")
+                clicked_quit, selected_quit = imgui.menu_item("Quit")
 
                 if clicked_quit:
-                    sys.exit(0)
+                    glfw.set_window_should_close(window, True)
+
+                if selected_capture:
+                    print("cs")
 
                 imgui.end_menu()
             imgui.end_main_menu_bar()
@@ -30,7 +38,12 @@ def main():
         imgui.show_test_window()
 
         imgui.begin("Custom window", True)
-        imgui.text("Bar")
+        imgui.begin_group()
+        imgui.text("Steps:")
+        SpaceCreationStep().render_config()
+        MeshCreationStep().render_config()
+        TectonicsCreationStep().render_config()
+        imgui.end_group()
         imgui.text_colored("Eggs", 0.2, 1., 0.)
         imgui.end()
 
@@ -67,7 +80,7 @@ def impl_glfw_init():
     if not window:
         glfw.terminate()
         print("Could not initialize Window")
-        sys.exit(1)
+        sys.exit(2)
 
     return window
 
