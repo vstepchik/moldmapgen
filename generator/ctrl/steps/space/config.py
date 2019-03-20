@@ -44,12 +44,12 @@ class SpaceCreationStepConfig(StepConfig[SpaceConfig]):
     def _render_config(self):
         _, self.__square_world = imgui.checkbox("Square world", self.__square_world)
         if self.__square_world:
-            _, size = imgui.drag_int("size", self._edited_data.width, 1, _MIN_SIZE, _MAX_SIZE)
+            _, size = imgui.drag_int("size", self._edited_data.width, 10, _MIN_SIZE, _MAX_SIZE)
             self._edited_data.width = size
             self._edited_data.height = size
         else:
-            _, self._edited_data.width = imgui.drag_int("width", self._edited_data.width, 1, _MIN_SIZE, _MAX_SIZE)
-            _, self._edited_data.height = imgui.drag_int("height", self._edited_data.height, 1, _MIN_SIZE, _MAX_SIZE)
+            _, self._edited_data.width = imgui.drag_int("width", self._edited_data.width, 10, _MIN_SIZE, _MAX_SIZE)
+            _, self._edited_data.height = imgui.drag_int("height", self._edited_data.height, 10, _MIN_SIZE, _MAX_SIZE)
 
         area, suffix = canonize_number(self._edited_data.area)
         imgui.text_unformatted(f"area: {area}{suffix.upper()}")
