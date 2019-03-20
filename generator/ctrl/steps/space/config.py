@@ -3,7 +3,7 @@ from math import sqrt
 
 import imgui
 
-from generator.ctrl.steps.Step import StepConfig, GeneratorStep
+from generator.ctrl.steps.Step import StepConfig
 from util import canonize_number
 
 _MIN_SIZE = 100
@@ -32,16 +32,13 @@ class SpaceConfig:
         return self.width / self.height
 
 
-class SpaceCreationStep(GeneratorStep[SpaceConfig]):
-    pass
-
-
 class SpaceCreationStepConfig(StepConfig[SpaceConfig]):
     def __init__(self):
         super().__init__("Space", SpaceConfig())
         self.__square_world: bool = True
 
-    def _create_step(self, config: SpaceConfig) -> SpaceCreationStep:
+    def _create_step(self, config: SpaceConfig):
+        from generator.ctrl.steps.space.step import SpaceCreationStep
         return SpaceCreationStep(config)
 
     def _render_config(self):
