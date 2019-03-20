@@ -3,7 +3,7 @@ from math import sqrt
 
 import imgui
 
-from generator.ctrl.Step import StepConfig, GeneratorStep
+from generator.ctrl.steps.Step import StepConfig, GeneratorStep
 from util import canonize_number
 
 _MIN_SIZE = 100

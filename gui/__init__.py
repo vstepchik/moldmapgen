@@ -6,9 +6,9 @@ import glfw
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
-from generator.ctrl.steps.mesh import MeshCreationStepConfig
-from generator.ctrl.steps.space import SpaceCreationStepConfig
-from generator.ctrl.steps.tectonics import TectonicsCreationStepConfig
+from generator.ctrl.steps.mesh.mesh import MeshCreationStepConfig
+from generator.ctrl.steps.space.space import SpaceCreationStepConfig
+from generator.ctrl.steps.tectonics.tectonics import TectonicsCreationStepConfig
 from gui.fonts import init_fonts, get_font, FNT_3270_MED_28
 from gui.windows.step_config_wnd import StepConfigWindow
 

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from generator.ctrl.Step import StepConfig, GeneratorStep
+from generator.ctrl.steps.Step import StepConfig, GeneratorStep
 
 
 @dataclass
