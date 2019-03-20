@@ -1,20 +1,40 @@
+import abc
+from copy import deepcopy
+from typing import TypeVar, Generic
+
 import imgui
 
+_CT = TypeVar("_CT")
 
-class Step:
-    def __init__(self, name: str) -> None:
-        self._dirty: bool = True
+
+class GeneratorStep(Generic[_CT]):
+    def __init__(self, config: _CT) -> None:
+        self.config: _CT = config
+
+
+class StepConfig(Generic[_CT]):
+    def __init__(self, name: str, initial_data: _CT) -> None:
+        self._data: _CT = deepcopy(initial_data)
+        self._edited_data: _CT = initial_data
         self.name: str = name
 
+    @property
+    def dirty(self) -> bool:
+        return self._data != self._edited_data
 
-class ConfigurableStep(Step):
-    def __init__(self, name: str) -> None:
-        super().__init__(name)
+    def reset(self):
+        self._edited_data = deepcopy(self._data)
 
-    def render_config(self) -> None:
-        label = f"{self.name} configuration"
-        if self._dirty:
-            label += '*'
+    def create_step(self) -> GeneratorStep[_CT]:
+        self._data = deepcopy(self._edited_data)
+        return self._create_step(self._data)
 
-        imgui.text(label)
-        imgui.text("/// NOT IMPLEMENTED ///")
+    @abc.abstractmethod
+    def _create_step(self, config: _CT) -> GeneratorStep[_CT]:
+        pass
+
+    def render(self):
+        self._render_config()
+
+    def _render_config(self):
+        imgui.text_unformatted("/// NOT IMPLEMENTED ///")

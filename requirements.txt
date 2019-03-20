@@ -5,4 +5,7 @@ matplotlib
 networkx
 noise
 jupyter
-imgui[glfw]
+glfw==1.7.1
+imgui==1.0.0a2
+Pillow
+PyOpenGL
