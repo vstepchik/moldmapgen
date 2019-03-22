@@ -23,8 +23,8 @@ class MoldMapGen(Thread):
         self.__show_metrics: bool = False
 
         self.__step_config_window: StepConfigWindow = StepConfigWindow([
-            MeshCreationStepConfig(),
             SpaceCreationStepConfig(),
+            MeshCreationStepConfig(),
             TectonicsCreationStepConfig(),
         ])
 

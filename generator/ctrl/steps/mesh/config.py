@@ -3,15 +3,11 @@ from dataclasses import dataclass
 import imgui
 
 from generator.ctrl.steps.Step import StepConfig
-from util import canonize_number
-
-_MIN_NODES = 10
-_MAX_NODES = 500_000
 
 
 @dataclass
 class MeshConfig:
-    n_nodes: int = 400
+    node_density: float = 0.017
 
 
 class MeshCreationStepConfig(StepConfig[MeshConfig]):
@@ -23,6 +19,6 @@ class MeshCreationStepConfig(StepConfig[MeshConfig]):
         return MeshCreationStep(config=config)
 
     def _render_config(self):
-        _, self._edited_data.n_nodes = imgui.drag_int("nodes", self._edited_data.n_nodes, 10, _MIN_NODES, _MAX_NODES)
-        area, suffix = canonize_number(self._edited_data.n_nodes)
-        imgui.text_unformatted(f"nodes: {area}{suffix.upper()}")
+        _, self._edited_data.node_density = imgui.drag_float(
+            "node density", self._edited_data.node_density, 0.001, 0.0, 1.0,
+        )
