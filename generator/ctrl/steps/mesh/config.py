@@ -7,7 +7,7 @@ from generator.ctrl.steps.Step import StepConfig
 
 @dataclass
 class MeshConfig:
-    node_density: float = 0.017
+    node_density: float = 0.016
 
 
 class MeshCreationStepConfig(StepConfig[MeshConfig]):
@@ -20,5 +20,5 @@ class MeshCreationStepConfig(StepConfig[MeshConfig]):
 
     def _render_config(self):
         _, self._edited_data.node_density = imgui.drag_float(
-            "node density", self._edited_data.node_density, 0.001, 0.0, 1.0,
+            "node density", self._edited_data.node_density, 0.0001, 0.0, 1.0,
         )
