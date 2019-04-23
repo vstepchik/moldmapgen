@@ -1,11 +1,9 @@
 from dataclasses import dataclass
 from math import sqrt
-from typing import Type, Any, FrozenSet
 
 import imgui
 
 from generator.ctrl.steps.step import StepConfig
-from generator.world import Space
 from util import canonize_number
 
 _MIN_SIZE = 100
@@ -35,9 +33,6 @@ class SpaceConfig:
 
 
 class SpaceCreationStepConfig(StepConfig[SpaceConfig]):
-    depends: FrozenSet[Type[Any]] = frozenset()
-    affects: FrozenSet[Type[Any]] = frozenset({Space})
-
     def __init__(self):
         super().__init__("Space", SpaceConfig())
         self.__square_world: bool = True

@@ -1,6 +1,6 @@
 import abc
 from copy import deepcopy
-from typing import TypeVar, Generic, Type, Any, FrozenSet
+from typing import TypeVar, Generic
 
 from generator.world import World
 
@@ -17,16 +17,6 @@ class GeneratorStep(Generic[_CT]):
 
 
 class StepConfig(Generic[_CT]):
-    @property
-    @abc.abstractmethod
-    def depends(self) -> FrozenSet[Type[Any]]:
-        pass
-
-    @property
-    @abc.abstractmethod
-    def affects(self) -> FrozenSet[Type[Any]]:
-        pass
-
     def __init__(self, name: str, initial_data: _CT) -> None:
         self._data: _CT = deepcopy(initial_data)
         self._edited_data: _CT = initial_data
