@@ -3,14 +3,17 @@ from typing import List
 import imgui
 
 from generator.ctrl.steps.step import StepConfig
+from generator.world import World
 
 
 class StepConfigWindow:
-    def __init__(self, steps: List[StepConfig]) -> None:
+    def __init__(self, world: World, steps: List[StepConfig]) -> None:
         if not steps:
             raise ValueError("Steps should contain at least single item")
         self.expanded = True
         self.open = True
+
+        self.__world = world
 
         self.steps: List[StepConfig] = steps
         self.selected_step_idx: int = 0
@@ -35,6 +38,7 @@ class StepConfigWindow:
         if imgui.button("Apply"):
             step = selected_step.create_step()
             print(step)
+            step.run(self.__world)
         if selected_step.dirty:
             imgui.same_line()
             if imgui.button("Reset"):

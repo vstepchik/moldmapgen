@@ -9,8 +9,10 @@ from imgui.integrations.glfw import GlfwRenderer
 from generator.ctrl.steps.mesh.config import MeshCreationStepConfig
 from generator.ctrl.steps.space.config import SpaceCreationStepConfig
 from generator.ctrl.steps.tectonics.config import TectonicsCreationStepConfig
+from generator.world import World
 from gui.fonts import init_fonts, get_font, FNT_3270_MED_28
 from gui.windows.step_config_wnd import StepConfigWindow
+from gui.windows.world_props_wnd import WorldPropertiesWindow
 
 
 class MoldMapGen(Thread):
@@ -22,7 +24,9 @@ class MoldMapGen(Thread):
         self.__show_style_editor: bool = False
         self.__show_metrics: bool = False
 
-        self.__step_config_window: StepConfigWindow = StepConfigWindow([
+        self.__world: World = World()
+        self.__world_props_window: WorldPropertiesWindow = WorldPropertiesWindow(self.__world)
+        self.__step_config_window: StepConfigWindow = StepConfigWindow(self.__world, [
             SpaceCreationStepConfig(),
             MeshCreationStepConfig(),
             TectonicsCreationStepConfig(),
@@ -43,13 +47,6 @@ class MoldMapGen(Thread):
 
             self.__main_menu_bar()
             self.__draw_windows()
-
-            if self.__show_demo:
-                imgui.show_test_window()
-            if self.__show_style_editor:
-                imgui.show_style_editor()
-            if self.__show_metrics:
-                imgui.show_metrics_window()
 
             gl.glClearColor(0.08, 0.08, 0.09, 1)
             gl.glClear(gl.GL_COLOR_BUFFER_BIT)
@@ -73,6 +70,10 @@ class MoldMapGen(Thread):
                 imgui.end_menu()
 
             if imgui.begin_menu("View", True):
+                clicked, state = imgui.menu_item("World props", None, self.__world_props_window.open)
+                if clicked:
+                    self.__world_props_window.open = state
+
                 clicked, state = imgui.menu_item("Step config", None, self.__step_config_window.open)
                 if clicked:
                     self.__step_config_window.open = state
@@ -105,6 +106,7 @@ class MoldMapGen(Thread):
         if self.__show_metrics:
             imgui.show_metrics_window()
 
+        self.__world_props_window.render()
         self.__step_config_window.render()
 
     @staticmethod
