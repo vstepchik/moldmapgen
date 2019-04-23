@@ -1,8 +1,10 @@
 from dataclasses import dataclass
+from typing import FrozenSet, Type, Any
 
 import imgui
 
 from generator.ctrl.steps.step import StepConfig
+from generator.world import Space, Tectonics, Mesh
 
 
 @dataclass
@@ -11,6 +13,9 @@ class TectonicsConfig:
 
 
 class TectonicsCreationStepConfig(StepConfig[TectonicsConfig]):
+    depends: FrozenSet[Type[Any]] = frozenset({Space, Mesh})
+    affects: FrozenSet[Type[Any]] = frozenset({Tectonics})
+
     def __init__(self):
         super().__init__("Tectonics", TectonicsConfig())
 

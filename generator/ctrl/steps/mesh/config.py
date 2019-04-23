@@ -1,9 +1,11 @@
 from dataclasses import dataclass
+from typing import FrozenSet, Type, Any
 
 import imgui
 import numpy as np
 
 from generator.ctrl.steps.step import StepConfig
+from generator.world import Space, Mesh
 
 
 @dataclass
@@ -12,6 +14,9 @@ class MeshConfig:
 
 
 class MeshCreationStepConfig(StepConfig[MeshConfig]):
+    depends: FrozenSet[Type[Any]] = frozenset({Space})
+    affects: FrozenSet[Type[Any]] = frozenset({Mesh})
+
     def __init__(self):
         super().__init__("Mesh", MeshConfig())
 
