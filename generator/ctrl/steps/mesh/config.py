@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 
 import imgui
+import numpy as np
 
 from generator.ctrl.steps.step import StepConfig
 
 
 @dataclass
 class MeshConfig:
-    node_density: float = 0.016
+    node_density: float = np.float32(0.016)
 
 
 class MeshCreationStepConfig(StepConfig[MeshConfig]):
