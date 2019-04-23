@@ -2,7 +2,7 @@ from typing import List
 
 import imgui
 
-from generator.ctrl.steps.Step import StepConfig
+from generator.ctrl.steps.step import StepConfig
 
 
 class StepConfigWindow:

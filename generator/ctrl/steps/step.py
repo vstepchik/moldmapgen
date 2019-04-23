@@ -2,7 +2,7 @@ import abc
 from copy import deepcopy
 from typing import TypeVar, Generic
 
-import imgui
+from generator.world import World
 
 _CT = TypeVar("_CT")
 
@@ -10,6 +10,10 @@ _CT = TypeVar("_CT")
 class GeneratorStep(Generic[_CT]):
     def __init__(self, config: _CT) -> None:
         self.config: _CT = config
+
+    @abc.abstractmethod
+    def run(self, world: World):
+        pass
 
 
 class StepConfig(Generic[_CT]):
@@ -36,5 +40,6 @@ class StepConfig(Generic[_CT]):
     def render(self):
         self._render_config()
 
+    @abc.abstractmethod
     def _render_config(self):
-        imgui.text_unformatted("/// NOT IMPLEMENTED ///")
+        pass

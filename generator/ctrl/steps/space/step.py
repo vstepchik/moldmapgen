@@ -1,6 +1,8 @@
-from generator.ctrl.steps.Step import GeneratorStep
 from generator.ctrl.steps.space.config import SpaceConfig
+from generator.ctrl.steps.step import GeneratorStep
+from generator.world import World
 
 
 class SpaceCreationStep(GeneratorStep[SpaceConfig]):
-    pass
+    def run(self, world: World):
+        pass
