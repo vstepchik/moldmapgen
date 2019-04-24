@@ -38,7 +38,7 @@ class WorldPropertiesWindow:
         elif isinstance(p, Tectonics):
             imgui.text_unformatted(f"num plates: {len(p.plates)}")
             if imgui.tree_node("plates"):
-                cols = ["N", "size", "color", "velocity", "spin"]
+                cols = ["#", "size", "color", "velocity", "spin"]
                 imgui.columns(len(cols))
                 for col in cols:
                     imgui.text_unformatted(col)
