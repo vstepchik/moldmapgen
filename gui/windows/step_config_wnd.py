@@ -37,7 +37,6 @@ class StepConfigWindow:
 
         if imgui.button("Apply"):
             step = selected_step.create_step()
-            print(step)
             step.run(self.__world)
         if selected_step.dirty:
             imgui.same_line()

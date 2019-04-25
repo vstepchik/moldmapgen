@@ -15,10 +15,22 @@ class Space(WorldProp):
     width: int
     height: int
 
+    @property
+    def area(self) -> int:
+        return self.width * self.height
+
 
 @dataclass
 class Mesh(WorldProp):
     points: np.ndarray
+    vertices: np.ndarray
+    ridge_points: np.ndarray
+    ridge_vertices: List[List[int]]
+    regions: List[List[int]]
+    point_region: List[int]
+    infinite_regions: Set
+    neighbor_points: List[Set[int]]
+    neighbor_vertices: List[Set[int]]
 
 
 @dataclass
