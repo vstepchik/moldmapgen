@@ -1,3 +1,5 @@
+from concurrent.futures import Future
+from concurrent.futures.thread import ThreadPoolExecutor
 from typing import List
 
 import imgui
@@ -12,6 +14,8 @@ class StepConfigWindow:
             raise ValueError("Steps should contain at least single item")
         self.expanded = True
         self.open = True
+        self.__executor: ThreadPoolExecutor = ThreadPoolExecutor(max_workers=1)
+        self.__step_running: bool = False
 
         self.__world = world
 
@@ -35,9 +39,10 @@ class StepConfigWindow:
 
         imgui.next_column()
 
-        if imgui.button("Apply"):
+        if not self.__step_running and imgui.button("Apply"):
             step = selected_step.create_step()
-            step.run(self.__world)
+            self.__step_running = True
+            self.__executor.submit(step.run, self.__world).add_done_callback(self.__handle_step_complete)
         if selected_step.dirty:
             imgui.same_line()
             if imgui.button("Reset"):
@@ -49,3 +54,8 @@ class StepConfigWindow:
         selected_step.render()
 
         imgui.end()
+
+    def __handle_step_complete(self, step_result_future: Future):
+        res = step_result_future.result()
+        self.__world[res.__class__] = res
+        self.__step_running = False

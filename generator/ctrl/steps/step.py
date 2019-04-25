@@ -1,8 +1,8 @@
 import abc
 from copy import deepcopy
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Optional
 
-from generator.world import World
+from generator.world import World, WorldProp
 
 _CT = TypeVar("_CT")
 
@@ -12,7 +12,7 @@ class GeneratorStep(Generic[_CT]):
         self.config: _CT = config
 
     @abc.abstractmethod
-    def run(self, world: World):
+    def run(self, world: World) -> Optional[WorldProp]:
         pass
 
 

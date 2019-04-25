@@ -1,4 +1,4 @@
-from typing import List, Set
+from typing import List, Set, Optional
 
 import numpy as np
 
@@ -9,10 +9,10 @@ from generator.world import World, Mesh, Space
 
 
 class MeshCreationStep(GeneratorStep[MeshConfig]):
-    def run(self, world: World):
+    def run(self, world: World) -> Optional[Mesh]:
         space: Space = world[Space]
         if space is None:
-            return
+            return None
 
         node_amount = int(self.config.node_density * space.area)
         atlas = Atlas(dimensions=(space.width, space.height), granularity=node_amount)
@@ -38,7 +38,7 @@ class MeshCreationStep(GeneratorStep[MeshConfig]):
                 neighbor_vertices[a].add(b)
                 neighbor_vertices[b].add(a)
 
-        world[Mesh] = Mesh(
+        return Mesh(
             points=points,
             vertices=vertices,
             ridge_points=ridge_points,
